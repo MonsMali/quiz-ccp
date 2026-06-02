@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { questions } from '@/data/quiz';
+import { questions, passMark } from '@/data/quiz';
 import QuizQuestion from '@/components/QuizQuestion';
 import ResultScreen from '@/components/ResultScreen';
 import { SubmitResponse } from '@/types';
 
-type Phase = 'intro' | 'quiz' | 'submitting' | 'result';
+type Phase = 'intro' | 'name' | 'quiz' | 'submitting' | 'result';
 
 function getClientId(): string {
   let id = localStorage.getItem('aq_clientId');
@@ -28,9 +28,12 @@ export default function Home() {
   const [result, setResult] = useState<SubmitResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [previously, setPreviously] = useState(false);
+  const [name, setName] = useState('');
 
   useEffect(() => {
     if (localStorage.getItem('aq_submitted') === '1') setPreviously(true);
+    const savedName = localStorage.getItem('aq_name');
+    if (savedName) setName(savedName);
   }, []);
 
   const q = questions[current];
@@ -38,6 +41,14 @@ export default function Home() {
 
   const start = () => {
     setError(null);
+    setPhase('name');
+  };
+
+  const goToQuiz = () => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    localStorage.setItem('aq_name', trimmed);
+    setName(trimmed);
     setPhase('quiz');
   };
 
@@ -106,8 +117,13 @@ export default function Home() {
       <div className="flex-1 rounded-2xl bg-white p-6 shadow-sm">
         {phase === 'intro' && (
           <div className="text-center">
-            <p className="mb-6 text-lg text-ink/80">
-              Responde a 4 perguntas sobre quando a IA inventa informação. Vês logo se acertaste.
+            <p className="mb-4 text-lg text-ink/80">
+              Responde a {questions.length} perguntas sobre quando a IA inventa informação. Vês logo
+              se acertaste.
+            </p>
+            <p className="mb-6 rounded-xl bg-brand-50/70 px-4 py-3 text-sm font-semibold text-ink/80">
+              Para teres sucesso, precisas de acertar pelo menos {passMark} das {questions.length}{' '}
+              perguntas (75%).
             </p>
             {previously && (
               <p className="mb-4 rounded-lg bg-brand-50 px-3 py-2 text-sm text-brand-700">
@@ -117,6 +133,33 @@ export default function Home() {
             )}
             <button onClick={start} className="btn-primary w-full">
               Começar
+            </button>
+          </div>
+        )}
+
+        {phase === 'name' && (
+          <div>
+            <label htmlFor="name" className="mb-2 block text-lg font-semibold text-ink">
+              Como te chamas?
+            </label>
+            <p className="mb-4 text-sm text-ink/60">
+              Escreve o teu primeiro nome para continuar.
+            </p>
+            <input
+              id="name"
+              type="text"
+              autoFocus
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') goToQuiz();
+              }}
+              placeholder="Primeiro nome"
+              maxLength={40}
+              className="mb-5 w-full rounded-xl border border-ink/15 px-4 py-3 text-lg text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/30"
+            />
+            <button onClick={goToQuiz} disabled={!name.trim()} className="btn-primary w-full">
+              Continuar
             </button>
           </div>
         )}
@@ -172,6 +215,7 @@ export default function Home() {
             score={result.score}
             perQuestion={result.perQuestion}
             alreadySubmitted={result.alreadySubmitted}
+            name={name}
           />
         )}
       </div>

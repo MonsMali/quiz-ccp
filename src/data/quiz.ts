@@ -59,3 +59,7 @@ export const questions: Question[] = [
 export const questionsById: Record<string, Question> = Object.fromEntries(
   questions.map((q) => [q.id, q]),
 );
+
+// Criterio de aprovacao: pelo menos 75% das perguntas certas.
+export const PASS_RATIO = 0.75;
+export const passMark = Math.ceil(questions.length * PASS_RATIO); // 3 de 4

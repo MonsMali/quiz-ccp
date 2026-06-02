@@ -1,15 +1,22 @@
 'use client';
 
-import { questions } from '@/data/quiz';
+import { questions, passMark } from '@/data/quiz';
 
 interface ResultScreenProps {
   score: number;
   perQuestion: { id: string; correct: boolean }[];
   alreadySubmitted?: boolean;
+  name?: string;
 }
 
-export default function ResultScreen({ score, perQuestion, alreadySubmitted }: ResultScreenProps) {
+export default function ResultScreen({
+  score,
+  perQuestion,
+  alreadySubmitted,
+  name,
+}: ResultScreenProps) {
   const total = questions.length;
+  const passed = score >= passMark;
   const correctById = Object.fromEntries(perQuestion.map((p) => [p.id, p.correct]));
 
   return (
@@ -18,10 +25,15 @@ export default function ResultScreen({ score, perQuestion, alreadySubmitted }: R
       <p className="my-2 text-6xl font-extrabold text-brand">
         {score}<span className="text-3xl text-ink/40">/{total}</span>
       </p>
-      <p className="mb-8 text-ink/60">
+      <p className={`mb-2 text-xl font-bold ${passed ? 'text-green-600' : 'text-ink/70'}`}>
+        {passed
+          ? `Parabéns${name ? ', ' + name : ''}! Conseguiste.`
+          : `Não foi desta${name ? ', ' + name : ''}.`}
+      </p>
+      <p className="mb-8 text-sm text-ink/60">
         {alreadySubmitted
           ? 'Já tinhas participado, por isso esta resposta não foi contada de novo.'
-          : 'Obrigado por participar!'}
+          : `Critério de sucesso: pelo menos ${passMark} de ${total} (75%).`}
       </p>
 
       <div className="space-y-4 text-left">
