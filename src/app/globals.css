@@ -6,21 +6,36 @@
   html {
     -webkit-text-size-adjust: 100%;
   }
+  body {
+    /* Crisper number alignment for scores, counters and charts */
+    font-feature-settings: 'cv02', 'cv03', 'cv04';
+    text-rendering: optimizeLegibility;
+  }
 }
 
 @layer components {
   /* Answer button used in the participant quiz */
   .btn-answer {
-    @apply w-full rounded-xl border border-ink/10 border-l-4 border-l-transparent bg-white px-4 py-4 text-left shadow-sm transition-colors hover:bg-brand-50/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand;
+    @apply w-full rounded-2xl border border-ink/[0.08] border-l-4 border-l-transparent bg-white px-5 py-4 text-left shadow-card transition-all duration-150 hover:-translate-y-0.5 hover:border-brand/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-paper;
   }
   .btn-answer.selected {
     @apply border-l-brand bg-brand-50;
   }
   .btn-answer:disabled {
-    @apply cursor-default;
+    @apply cursor-default hover:translate-y-0 hover:border-ink/[0.08];
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl bg-brand px-6 py-3 text-base font-bold text-white shadow-sm transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-brand px-6 py-3.5 text-base font-bold text-white shadow-[0_1px_2px_rgba(21,21,26,0.06),0_14px_30px_-14px_rgba(0,97,194,0.55)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:bg-brand;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-pulse {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 0.01ms !important;
   }
 }

@@ -59,42 +59,52 @@ export default function AdminPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-8">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-3xl font-extrabold text-brand sm:text-4xl">Resultados ao vivo</h1>
+      <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1.5">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-brand" />
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-700">
+              Atualiza ao vivo
+            </span>
+          </div>
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+            Resultados ao vivo
+          </h1>
+        </div>
         <button
           onClick={reset}
           disabled={resetting}
-          className="rounded-lg border border-ink/15 px-4 py-2 text-sm font-semibold text-ink/60 transition hover:bg-ink/5 disabled:opacity-50"
+          className="rounded-xl border border-ink/15 px-4 py-2.5 text-sm font-bold text-ink/55 transition hover:bg-ink/5 hover:text-ink disabled:opacity-50"
         >
           {resetting ? 'A repor...' : 'Repor'}
         </button>
       </div>
 
       {error && (
-        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-lg text-red-700">
+        <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-lg font-medium text-red-700">
           {error}
         </div>
       )}
 
       {/* Media e total */}
-      <div className="mb-8 grid grid-cols-2 gap-4">
-        <div className="rounded-2xl bg-brand p-6 text-white shadow-sm">
-          <p className="text-lg opacity-90">Média da turma</p>
-          <p className="text-5xl font-extrabold tabular-nums sm:text-6xl">
+      <div className="mb-8 grid grid-cols-2 gap-4 sm:gap-5">
+        <div className="rounded-3xl bg-brand p-6 text-white shadow-card sm:p-7">
+          <p className="text-base font-semibold text-white/85 sm:text-lg">Média da turma</p>
+          <p className="font-display text-6xl font-extrabold leading-tight tabular-nums sm:text-7xl">
             {(data?.average ?? 0).toFixed(1)}
-            <span className="text-2xl opacity-80"> / 4</span>
+            <span className="text-2xl text-white/70 sm:text-3xl"> / 4</span>
           </p>
         </div>
-        <div className="rounded-2xl bg-white p-6 shadow-sm">
-          <p className="text-lg text-ink/60">Participantes</p>
-          <p className="text-5xl font-extrabold tabular-nums text-ink sm:text-6xl">
+        <div className="rounded-3xl border border-ink/[0.06] bg-white p-6 shadow-card sm:p-7">
+          <p className="text-base font-semibold text-ink/55 sm:text-lg">Participantes</p>
+          <p className="font-display text-6xl font-extrabold leading-tight tabular-nums text-ink sm:text-7xl">
             {data?.submissions ?? 0}
           </p>
         </div>
       </div>
 
       {/* Graficos por pergunta */}
-      <div className="space-y-6">
+      <div className="space-y-5">
         {data?.questions.map((q) => <ResultsChart key={q.id} q={q} />)}
       </div>
     </main>

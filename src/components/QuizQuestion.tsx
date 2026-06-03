@@ -27,8 +27,8 @@ export default function QuizQuestion({
   };
 
   return (
-    <div>
-      <h2 className="mb-6 text-xl font-bold leading-relaxed text-ink sm:text-2xl">
+    <div className="animate-fade-up">
+      <h2 className="mb-6 font-display text-xl font-bold leading-snug text-ink sm:text-2xl">
         {question.prompt}
       </h2>
 
@@ -61,7 +61,7 @@ export default function QuizQuestion({
             iconClass = 'bg-green-500 text-white';
           }
           if (isDim) {
-            buttonClass += ' opacity-[0.45]';
+            buttonClass += ' opacity-50';
           }
 
           return (
@@ -74,7 +74,7 @@ export default function QuizQuestion({
             >
               <span className="flex items-start gap-3">
                 <span
-                  className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-sm font-bold transition-colors ${iconClass}`}
+                  className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-colors ${iconClass}`}
                 >
                   {showFeedback && isSelected && isCorrect && '✓'}
                   {showFeedback && isSelected && !isCorrect && '✗'}
@@ -82,7 +82,7 @@ export default function QuizQuestion({
                   {(!showFeedback || (!isSelected && !isRevealed)) &&
                     String.fromCharCode(65 + i)}
                 </span>
-                <span className="pt-1 text-left text-ink">{option}</span>
+                <span className="pt-1 text-left font-medium text-ink">{option}</span>
               </span>
             </button>
           );

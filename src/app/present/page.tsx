@@ -43,35 +43,69 @@ export default function PresentPage() {
   const displayUrl = joinUrl.replace(/^https?:\/\//, '');
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6 py-10 text-center">
-      <h1 className="mb-2 text-5xl font-extrabold text-brand sm:text-6xl">Alucinações de IA</h1>
-      <p className="mb-10 text-2xl text-ink/70">Aponta a câmara do telemóvel ao QR code para participar</p>
+    <main
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-8 py-12 text-center text-white"
+      style={{
+        background:
+          'radial-gradient(120% 120% at 50% 0%, #0a539f 0%, #0a447f 45%, #04182e 100%)',
+      }}
+    >
+      {/* Textura de pontos subtil */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage: 'radial-gradient(#fff 1.4px, transparent 1.4px)',
+          backgroundSize: '40px 40px',
+        }}
+      />
 
-      <div className="rounded-3xl bg-white p-8 shadow-lg">
-        {joinUrl && (
-          <QRCodeSVG
-            value={joinUrl}
-            size={340}
-            level="M"
-            fgColor="#C2006C"
-            bgColor="#ffffff"
-          />
-        )}
-      </div>
+      <div className="relative flex flex-col items-center">
+        <div className="mb-7 inline-flex items-center gap-2.5 rounded-full bg-white/10 px-4 py-2 backdrop-blur">
+          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-white" />
+          <span className="text-base font-bold uppercase tracking-[0.18em] text-white/90">
+            Ao vivo
+          </span>
+        </div>
 
-      {displayUrl && (
-        <p className="mt-8 text-3xl font-bold tracking-tight text-ink">{displayUrl}</p>
-      )}
+        <h1 className="font-display text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
+          Alucinações de IA
+        </h1>
+        <p className="mb-12 mt-3 max-w-2xl text-2xl font-medium text-white/75 sm:text-3xl">
+          Aponta a câmara do telemóvel ao QR code para participar
+        </p>
 
-      <div className="mt-12 flex items-baseline gap-4">
-        <span className="text-7xl font-extrabold tabular-nums text-brand">{submissions}</span>
-        <span className="text-3xl text-ink/70">
-          {submissions === 1 ? 'resposta recebida' : 'respostas recebidas'}
-        </span>
+        <div className="flex flex-col items-center gap-10 lg:flex-row lg:gap-16">
+          <div className="rounded-[2rem] bg-white p-7 shadow-2xl">
+            {joinUrl && (
+              <QRCodeSVG value={joinUrl} size={300} level="M" fgColor="#0061C2" bgColor="#ffffff" />
+            )}
+          </div>
+
+          <div className="text-center lg:text-left">
+            {displayUrl && (
+              <>
+                <p className="text-base font-semibold uppercase tracking-[0.2em] text-white/55">
+                  Acede a
+                </p>
+                <p className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
+                  {displayUrl}
+                </p>
+              </>
+            )}
+            <div className="mt-10">
+              <p className="font-display text-7xl font-extrabold leading-none tabular-nums sm:text-8xl lg:text-[7rem]">
+                {submissions}
+              </p>
+              <p className="mt-1 text-2xl font-semibold text-white/70 sm:text-3xl">
+                {submissions === 1 ? 'resposta recebida' : 'respostas recebidas'}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {error && (
-        <p className="mt-8 rounded-xl border border-red-200 bg-red-50 px-5 py-3 text-lg text-red-700">
+        <p className="relative mt-10 rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-lg font-medium text-white backdrop-blur">
           {error}
         </p>
       )}

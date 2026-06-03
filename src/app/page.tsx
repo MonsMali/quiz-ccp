@@ -38,6 +38,7 @@ export default function Home() {
 
   const q = questions[current];
   const isLast = current === questions.length - 1;
+  const progress = ((current + (showFeedback ? 1 : 0)) / questions.length) * 100;
 
   const start = () => {
     setError(null);
@@ -100,46 +101,70 @@ export default function Home() {
     }
   };
 
+  const compact = phase !== 'intro';
+
   return (
-    <main className="mx-auto flex min-h-screen max-w-xl flex-col px-4 py-6">
+    <main className="mx-auto flex min-h-screen max-w-xl flex-col px-4 py-7">
       {/* Cabecalho */}
       <header className="mb-6 text-center">
-        <h1 className="text-2xl font-extrabold text-brand">Alucinações de IA</h1>
-        <p className="text-sm text-ink/60">Quiz rápido · 4 perguntas</p>
+        {compact ? (
+          <h1 className="font-display text-xl font-extrabold tracking-tight text-brand">
+            Alucinações de IA
+          </h1>
+        ) : (
+          <>
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1.5">
+              <span className="h-2 w-2 rounded-full bg-brand" />
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-700">
+                Quiz rápido · 4 perguntas
+              </span>
+            </div>
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink">
+              Alucinações de IA
+            </h1>
+          </>
+        )}
       </header>
 
       {error && (
-        <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
           {error}
         </div>
       )}
 
-      <div className="flex-1 rounded-2xl bg-white p-6 shadow-sm">
+      <div className="flex flex-1 flex-col rounded-3xl bg-white p-6 shadow-card">
         {phase === 'intro' && (
-          <div className="text-center">
-            <p className="mb-4 text-lg text-ink/80">
+          <div className="flex flex-1 flex-col">
+            <p className="mb-5 text-lg leading-relaxed text-ink/80">
               Responde a {questions.length} perguntas sobre quando a IA inventa informação. Vês logo
               se acertaste.
             </p>
-            <p className="mb-6 rounded-xl bg-brand-50/70 px-4 py-3 text-sm font-semibold text-ink/80">
-              Para teres sucesso, precisas de acertar pelo menos {passMark} das {questions.length}{' '}
-              perguntas (75%).
-            </p>
+            <div className="mb-6 flex items-start gap-3 rounded-2xl bg-brand-50/70 px-4 py-3.5">
+              <span className="mt-0.5 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-brand text-[11px] font-extrabold tabular-nums text-white">
+                75
+              </span>
+              <p className="text-sm font-semibold leading-snug text-ink/75">
+                Para teres sucesso, precisas de acertar pelo menos {passMark} das {questions.length}{' '}
+                perguntas (75%).
+              </p>
+            </div>
             {previously && (
-              <p className="mb-4 rounded-lg bg-brand-50 px-3 py-2 text-sm text-brand-700">
+              <p className="mb-4 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm leading-snug text-brand-700">
                 Já participaste neste dispositivo. Podes responder na mesma, mas só a primeira
                 resposta conta para os resultados.
               </p>
             )}
-            <button onClick={start} className="btn-primary w-full">
-              Começar
-            </button>
+            <div className="mt-auto pt-2">
+              <button onClick={start} className="btn-primary w-full">
+                Começar
+              </button>
+            </div>
           </div>
         )}
 
         {phase === 'name' && (
-          <div>
-            <label htmlFor="name" className="mb-2 block text-lg font-semibold text-ink">
+          <div className="flex flex-1 flex-col">
+            <label htmlFor="name" className="mb-2 block font-display text-xl font-bold text-ink">
               Como te chamas?
             </label>
             <p className="mb-4 text-sm text-ink/60">
@@ -156,28 +181,28 @@ export default function Home() {
               }}
               placeholder="Primeiro nome"
               maxLength={40}
-              className="mb-5 w-full rounded-xl border border-ink/15 px-4 py-3 text-lg text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/30"
+              className="mb-5 w-full rounded-2xl border border-ink/15 bg-paper px-4 py-3.5 text-lg text-ink outline-none transition focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/15"
             />
-            <button onClick={goToQuiz} disabled={!name.trim()} className="btn-primary w-full">
-              Continuar
-            </button>
+            <div className="mt-auto pt-2">
+              <button onClick={goToQuiz} disabled={!name.trim()} className="btn-primary w-full">
+                Continuar
+              </button>
+            </div>
           </div>
         )}
 
         {(phase === 'quiz' || phase === 'submitting') && (
           <div>
-            <div className="mb-4 flex items-center justify-between text-sm font-semibold text-ink/50">
+            <div className="mb-2.5 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-ink/45">
               <span>
                 Pergunta {current + 1} de {questions.length}
               </span>
-              <span>{Math.round(((current + (showFeedback ? 1 : 0)) / questions.length) * 100)}%</span>
+              <span className="tabular-nums">{Math.round(progress)}%</span>
             </div>
-            <div className="mb-6 h-2 w-full overflow-hidden rounded-full bg-brand-50">
+            <div className="mb-6 h-2.5 w-full overflow-hidden rounded-full bg-brand-50">
               <div
-                className="h-full bg-brand transition-all"
-                style={{
-                  width: `${((current + (showFeedback ? 1 : 0)) / questions.length) * 100}%`,
-                }}
+                className="h-full rounded-full bg-brand transition-all duration-500 ease-out"
+                style={{ width: `${progress}%` }}
               />
             </div>
 
@@ -190,10 +215,13 @@ export default function Home() {
             />
 
             {showFeedback && (
-              <div className="mt-6">
-                <p className="mb-4 rounded-xl bg-brand-50/70 px-4 py-3 text-sm text-ink/80">
-                  {q.why}
-                </p>
+              <div className="mt-6 animate-fade-up">
+                <div className="mb-4 flex gap-3 rounded-2xl border border-brand-100 bg-brand-50/60 px-4 py-3.5">
+                  <span className="mt-0.5 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-brand-700">
+                    Porquê
+                  </span>
+                  <p className="text-sm leading-relaxed text-ink/80">{q.why}</p>
+                </div>
                 <button
                   onClick={next}
                   disabled={phase === 'submitting'}
