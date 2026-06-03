@@ -31,9 +31,34 @@ export default function Home() {
   const [name, setName] = useState('');
 
   useEffect(() => {
-    if (localStorage.getItem('aq_submitted') === '1') setPreviously(true);
     const savedName = localStorage.getItem('aq_name');
     if (savedName) setName(savedName);
+
+    let active = true;
+    (async () => {
+      let submitted = localStorage.getItem('aq_submitted') === '1';
+      try {
+        // Se a ronda no servidor mudou (o formador fez "Repor"), este dispositivo
+        // comeca de novo: limpamos a flag local de "ja submeteu".
+        const res = await fetch('/api/results', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          const serverRound = String(data.round ?? 0);
+          if (localStorage.getItem('aq_round') !== serverRound) {
+            localStorage.removeItem('aq_submitted');
+            localStorage.setItem('aq_round', serverRound);
+            submitted = false;
+          }
+        }
+      } catch {
+        // Sem rede: mantemos o que estiver guardado localmente.
+      }
+      if (active) setPreviously(submitted);
+    })();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const q = questions[current];

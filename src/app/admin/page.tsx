@@ -44,6 +44,7 @@ export default function AdminPage() {
       setData((prev) =>
         prev
           ? {
+              ...prev,
               submissions: 0,
               average: 0,
               questions: prev.questions.map((q) => ({ ...q, counts: q.counts.map(() => 0) })),

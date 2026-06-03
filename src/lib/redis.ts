@@ -30,9 +30,13 @@ export const keys = {
   counts: (qid: string) => `aq:counts:${qid}`,
   // Hash global: campos "submissions" e "correctSum".
   stats: 'aq:stats',
-  // Guarda de dupla submissao por cliente (SET NX).
-  client: (clientId: string) => `aq:client:${clientId}`,
-  // Lista de chaves a apagar num reset.
+  // Contador de ronda. O "Repor" incrementa-o; serve para que cada dispositivo
+  // perceba que comecou uma nova sessao e limpe a sua flag local de "ja submeteu".
+  round: 'aq:round',
+  // Guarda de dupla submissao por cliente, por ronda (SET NX). Como inclui a ronda,
+  // um "Repor" deixa o mesmo dispositivo voltar a contar numa sessao nova.
+  client: (round: number, clientId: string) => `aq:client:${round}:${clientId}`,
+  // Lista de chaves de contagem a apagar num reset (a ronda e incrementada a parte).
   all: (qIds: string[]) => [
     'aq:stats',
     ...qIds.map((id) => `aq:counts:${id}`),

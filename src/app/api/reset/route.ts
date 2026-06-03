@@ -4,9 +4,10 @@ import { questions } from '@/data/quiz';
 
 export const runtime = 'nodejs';
 
-// Limpa contagens e estatisticas entre sessoes. Nao apaga as guardas de cliente
-// (aq:client:*) porque essas expiram sozinhas em 24h; para um novo grupo de pessoas
-// isso e irrelevante. Sem auth: destina-se a uso de sala, nao exponhas o URL.
+// Limpa contagens e estatisticas entre sessoes e incrementa a ronda. A ronda nova
+// faz com que cada dispositivo limpe a sua flag local de "ja submeteu" e que a guarda
+// de dupla submissao (que inclui a ronda) deixe toda a gente voltar a contar.
+// Sem auth: destina-se a uso de sala, nao exponhas o URL.
 export async function POST() {
   if (!isRedisConfigured()) {
     console.error(REDIS_MISSING_MESSAGE);
@@ -14,7 +15,11 @@ export async function POST() {
   }
 
   const redis = getRedis();
-  await redis.del(...keys.all(questions.map((q) => q.id)));
+  const pipe = redis.pipeline();
+  pipe.del(...keys.all(questions.map((q) => q.id)));
+  pipe.incr(keys.round);
+  const res = (await pipe.exec()) as [number, number];
+  const round = Number(res[1] ?? 0);
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, round });
 }

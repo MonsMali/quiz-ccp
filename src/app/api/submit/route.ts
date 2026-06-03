@@ -39,8 +39,12 @@ export async function POST(request: NextRequest) {
 
   const redis = getRedis();
 
+  // Ronda atual: a guarda de dupla submissão é por ronda, para que um "Repor"
+  // (que incrementa a ronda) deixe o mesmo dispositivo voltar a contar.
+  const round = Number((await redis.get(keys.round)) ?? 0);
+
   // Guarda de dupla submissão: SET NX. Se a chave já existir, este cliente já submeteu.
-  const guard = await redis.set(keys.client(clientId), 1, { nx: true, ex: 60 * 60 * 24 });
+  const guard = await redis.set(keys.client(round, clientId), 1, { nx: true, ex: 60 * 60 * 24 });
   if (guard === null) {
     return NextResponse.json({
       success: true,

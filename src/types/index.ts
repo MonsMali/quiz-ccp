@@ -37,6 +37,7 @@ export interface QuestionResults {
 }
 
 export interface ResultsResponse {
+  round: number;
   submissions: number;
   average: number;
   questions: QuestionResults[];
